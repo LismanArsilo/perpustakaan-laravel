@@ -18,9 +18,10 @@ class Authenticate extends Middleware
     protected function redirectTo($request)
     {
         // Lokasi redirect jika token tidak valid/salah
-        dd(!$request->expectsJson());
+        // dd(!$request->expectsJson());
         if (!$request->expectsJson()) {
             return response()->json(['status' => false, 'error' =>  'Your Content Type Not Valid'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
+        // dd('auth redicert');
     }
 }

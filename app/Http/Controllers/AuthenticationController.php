@@ -8,6 +8,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use stdClass;
 
 class AuthenticationController extends Controller
 {
@@ -26,11 +27,14 @@ class AuthenticationController extends Controller
             }
             $token = $user->createToken('access_token')->plainTextToken;
 
-            $data = (object)[
-                $user, 'token' => $token
-            ];
+            // $data = (object)[
+            //     $user, 'token' => $token
+            // ];
+            $data = new stdClass;
+            $data = $user;
+            $data->token = $token;
 
-            return response()->json(['status' => true, 'message' => 'Your Login Successfully', 'data' => $data], Response::HTTP_OK);
+            return response()->json(['status' => true, 'message' => 'Your Login Successfully', 'data' => [$data]], Response::HTTP_OK);
         } catch (\Throwable $th) {
             //throw $th;
             return response()->json(['status' => false, 'error' => $th->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);

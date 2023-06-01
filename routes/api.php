@@ -31,7 +31,7 @@ use Illuminate\Support\Facades\Route;
 // });
 
 // Auth sanctum
-Route::prefix('/auth')->group(function () {
+Route::prefix('/v1/auth')->group(function () {
     Route::middleware('guest')->group(function () {
         Route::post('/register', [AuthenticationController::class, 'register']);
         Route::post('/login', [AuthenticationController::class, 'login']);
@@ -43,7 +43,7 @@ Route::prefix('/auth')->group(function () {
 
 
 // Category
-Route::prefix('/category')->middleware('auth:sanctum')->group(function () {
+Route::prefix('/v1/category')->middleware('auth:sanctum')->group(function () {
     Route::post('/', [CategoryController::class, 'createdCategory']);
     Route::get('/', [CategoryController::class, 'getAllCategory']);
     Route::get('/{id}', [CategoryController::class, 'getOneCategory']);
@@ -52,7 +52,7 @@ Route::prefix('/category')->middleware('auth:sanctum')->group(function () {
 });
 
 // Status
-Route::prefix('/status')->middleware(['auth:sanctum', 'isAdmin'])->group(function () {
+Route::prefix('/v1/status')->middleware(['auth:sanctum', 'isAdmin'])->group(function () {
     Route::get('/', [StatusController::class, 'getAllStatus']);
     Route::get('/{id}', [StatusController::class, 'getOneStatus']);
     Route::post('/', [StatusController::class, 'createdStatus']);
@@ -61,7 +61,7 @@ Route::prefix('/status')->middleware(['auth:sanctum', 'isAdmin'])->group(functio
 });
 
 // Book
-Route::prefix('/book')->middleware('auth:sanctum')->group(function () {
+Route::prefix('/v1/book')->middleware('auth:sanctum')->group(function () {
     Route::get('/', [BookController::class, 'getAllBook']);
     Route::get('/image/{pathImage}', [BookController::class, 'showImage']);
     Route::get('/{id}', [BookController::class, 'getOneBook']);
@@ -73,14 +73,14 @@ Route::prefix('/book')->middleware('auth:sanctum')->group(function () {
 });
 
 // Role
-Route::prefix('/role')->middleware(['auth:sanctum', 'isAdmin'])->group(function () {
+Route::prefix('/v1/role')->middleware(['auth:sanctum', 'isAdmin'])->group(function () {
     Route::post('/', [RoleController::class, 'createdRole']);
     Route::get('/', [RoleController::class, 'getAllRole']);
     Route::get('/{id}', [RoleController::class, 'getOneRole']);
 });
 
 // User
-Route::prefix('/user')->group(function () {
+Route::prefix('/v1/user')->group(function () {
     Route::get('/{id}', [UserController::class, 'getOneUser']);
 });
 

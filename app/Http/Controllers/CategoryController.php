@@ -68,6 +68,7 @@ class CategoryController extends Controller
     public function deletedCategory($id)
     {
         try {
+
             $category = Category::findOrfail($id)->delete();
 
             return response()->json(['status' => true, 'message' => 'Deleted Category Successfully'], Response::HTTP_OK);
