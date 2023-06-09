@@ -8,6 +8,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
+use stdClass;
 
 class BookController extends Controller
 {
@@ -47,12 +48,28 @@ class BookController extends Controller
         }
     }
 
-    public function getAllBook()
+    public function getAllBook(Request $request)
     {
         try {
-            $book = Book::select('id', 'title', 'author', 'publisher', 'publisher_year', 'image', 'cate_id', 'created_at', 'updated_at')->get();
+            $search = $request->search;
+            $perPage = 2;
+            $query = Book::with('category')->where('title', 'LIKE', '%' . $search . '%')->orWhere('author', 'LIKE', '%' . $search . '%')
+                ->orWhereHas('category', function ($query) use ($search) {
+                    $query->where('category_name', 'LIKE', '%' . $search . '%');
+                });
+            $totalItems = $query->count(); // Jumlah total item
 
-            return response()->json(['status' => true, 'message' => 'Get All Book Successfully', 'data' => $book], Response::HTTP_OK);
+            $books = $query->simplePaginate($perPage); //Melakukan pagination
+
+            $totalPages = ceil($totalItems / $perPage); // Hitung total halaman
+
+            return response()->json([
+                'status' => true, 'message' => 'Get All Book Successfully',
+                'data' => $books->items(),
+                'current_page' => $books->currentPage(),
+                'per_page' => $books->perPage(),
+                'total_pages' => $totalPages,
+            ], Response::HTTP_OK);
         } catch (\Throwable $th) {
             //throw $th;
             return response()->json(['status' => false, 'message' => $th->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);

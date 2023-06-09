@@ -21,16 +21,10 @@ class RedirectIfAuthenticated
     // Route pengecekan ketika LOGIN apakan ketika di cek sanctum sudah ada atau belum jika sudah redirect
     public function handle(Request $request, Closure $next, ...$guards)
     {
-        // if ($request->header('Authorization'))
-        //     return response()->json(['status' => false, 'message' => 'You Not Have Token'], Response::HTTP_BAD_REQUEST);
-        // if (!$request->header('Authorization'))
-        //     return response()->json(['status' => false, 'message' => 'You Not Have Token'], Response::HTTP_BAD_REQUEST);
-        // if($request->header('Authorization'))
         $guards = empty($guards) ? [null] : $guards;
         foreach ($guards as $guard) {
             if (Auth::guard('sanctum')->check()) {
                 return response()->json(['status' => false, 'message' => 'You Are Logged In'], Response::HTTP_BAD_REQUEST);
-                // return redirect(RouteServiceProvider::HOME);
             }
         }
         return $next($request);

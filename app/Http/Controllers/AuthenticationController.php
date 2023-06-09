@@ -23,7 +23,7 @@ class AuthenticationController extends Controller
             $user = User::where('email', $request->email)->first();
 
             if (!$user || !Hash::check($request->password, $user->password)) {
-                return response()->json(['status' => false, 'error' => 'Incorrect Email Or Password'], Response::HTTP_UNAUTHORIZED);
+                return response()->json(['status' => false, 'error' => 'Incorrect Email Or Password'], Response::HTTP_UNPROCESSABLE_ENTITY);
             }
             $token = $user->createToken('access_token')->plainTextToken;
 
@@ -31,10 +31,11 @@ class AuthenticationController extends Controller
             //     $user, 'token' => $token
             // ];
             $data = new stdClass;
-            $data = $user;
+            $data->name = $user->name;
+            $data->role_id = $user->role_id;
             $data->token = $token;
 
-            return response()->json(['status' => true, 'message' => 'Your Login Successfully', 'data' => [$data]], Response::HTTP_OK);
+            return response()->json(['status' => true, 'message' => 'Your Login Successfully', 'data' => $data], Response::HTTP_OK);
         } catch (\Throwable $th) {
             //throw $th;
             return response()->json(['status' => false, 'error' => $th->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);

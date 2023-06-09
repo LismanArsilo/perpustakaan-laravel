@@ -15,6 +15,7 @@ class Book extends Model
 
     public function category()
     {
+        return $this->belongsTo(Category::class, 'cate_id', 'id');
     }
 
     // Mengubah Format Date
